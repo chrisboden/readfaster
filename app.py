@@ -1,14 +1,21 @@
 from flask import Flask, jsonify, send_from_directory
 import os
 
-app = Flask(__name__, static_folder='static')
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 
-DOCS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'docs')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DOCS_DIR = os.path.join(BASE_DIR, 'docs')
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
 
 @app.route('/')
 def index():
-    return send_from_directory('static', 'index.html')
+    return send_from_directory(STATIC_DIR, 'index.html')
+
+
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory(STATIC_DIR, filename)
 
 
 @app.route('/api/docs')
